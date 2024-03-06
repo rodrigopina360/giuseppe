@@ -1,20 +1,21 @@
 from __future__ import annotations
 
-from discord import Embed
-
 from common import humanizer
+from discord import Embed
 from models.osu import Mode
 from models.osu import User
 
 
 class ProfileEmbed(Embed):
-    def __init__(self, user: User, mode: Mode, **kwargs):
+    def __init__(self, ctx: commands.Context, user: User, mode: Mode, **kwargs):
         super().__init__(
             title=f"osu!{mode!r} Profile for {user.info.name}",
             url=user.info.profile_url,
             description=f"{user.stats.get(mode).pp}pp ({self._format_rank(user, mode)})",
             **kwargs,
         )
+
+        self.color = ctx.author.color
 
         self.set_thumbnail(url=user.info.avatar_url)
 

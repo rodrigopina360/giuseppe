@@ -21,12 +21,12 @@ class UserInfo(FrozenModel):
     @computed_field  # type: ignore
     @property
     def profile_url(self) -> str:
-        return f"https://giuseppecord.com/u/{self.id}"
+        return f"https://osu.pinoptserver.website/u/{self.id}"
 
     @computed_field  # type: ignore
     @property
     def avatar_url(self) -> str:
-        return f"https://a.giuseppecord.com/{self.id}"
+        return f"https://a.pinoptserver.website/{self.id}"
 
     @computed_field  # type: ignore
     @property

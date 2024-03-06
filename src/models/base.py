@@ -1,7 +1,6 @@
 """
 This module contains base models for objects.
 """
-
 from __future__ import annotations
 
 import pydantic

@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from discord.ext import commands
-
 from classes.bot import Giuseppe
+from discord.ext import commands
 from models import osu
 from ui.embeds import ProfileEmbed
 from ui.embeds import ScoreMultipleEmbed
@@ -41,7 +40,19 @@ class OsuCog(commands.Cog):
         if name is None:
             name = await self.bot.osu_service.get(ctx.author.id)
         profile = await self.gulag_client.get_user(username=name)
-        await ctx.send(embed=ProfileEmbed(profile, mode))
+        await ctx.send(embed=ProfileEmbed(ctx, profile, mode))
+
+    @commands.hybrid_command(name="profilerelax", aliases=["prx"])
+    async def profilerelax_command(
+        self,
+        ctx: commands.Context,
+        name: str = None,
+        mode: osu.Mode = osu.Mode.RELAX_OSU,
+    ) -> None:
+        if name is None:
+            name = await self.bot.osu_service.get(ctx.author.id)
+        profile = await self.gulag_client.get_user(username=name)
+        await ctx.send(embed=ProfileEmbed(ctx, profile, mode))
 
     @commands.hybrid_command(name="recent", aliases=["rs", "r"])
     async def recent_command(
@@ -56,20 +67,58 @@ class OsuCog(commands.Cog):
         score = (await self.gulag_client.get_user_recent(id=profile.info.id, limit=1))[
             0
         ]
-        await ctx.send(embed=ScoreSingleEmbed(profile, mode, score))
+        await ctx.send(embed=ScoreSingleEmbed(ctx, profile, mode, score))
+
+    @commands.hybrid_command(name="recentrelax", aliases=["rsx", "rx"])
+    async def recentrelax_command(
+        self,
+        ctx: commands.Context,
+        name: str = None,
+        mode: osu.Mode = osu.Mode.RELAX_OSU,
+    ) -> None:
+        if name is None:
+            name = await self.bot.osu_service.get(ctx.author.id)
+        profile = await self.gulag_client.get_user(username=name)
+        score = (await self.gulag_client.get_user_recent(id=profile.info.id, limit=1, mode=4))[
+            0
+        ]
+        await ctx.send(embed=ScoreSingleEmbed(ctx, profile, mode, score))
 
     @commands.hybrid_command(name="top")
     async def top_command(
         self,
         ctx: commands.Context,
         name: str = None,
+        index: int = 0,
         mode: osu.Mode = osu.Mode.VANILLA_OSU,
     ) -> None:
         if name is None:
             name = await self.bot.osu_service.get(ctx.author.id)
         profile = await self.gulag_client.get_user(username=name)
-        scores = await self.gulag_client.get_user_best(id=profile.info.id, limit=3)
-        await ctx.send(embed=ScoreMultipleEmbed(profile, mode, scores))
+        if(index != 0):
+            scores = await self.gulag_client.get_user_best(id=profile.info.id, limit=3, index=index)
+        else:
+            scores = await self.gulag_client.get_user_best(id=profile.info.id, limit=3)
+            
+        await ctx.send(embed=ScoreMultipleEmbed(ctx, profile, mode, scores))
+
+    @commands.hybrid_command(name="toprx")
+    async def toprx_command(
+        self,
+        ctx: commands.Context,
+        name: str = None,
+        index: int = 0,
+        mode: osu.Mode = osu.Mode.RELAX_OSU,
+    ) -> None:
+        if name is None:
+            name = await self.bot.osu_service.get(ctx.author.id)
+        profile = await self.gulag_client.get_user(username=name)
+        if(index != 0):
+            scores = await self.gulag_client.get_user_best(id=profile.info.id, limit=3, mode=4, index=index)
+        else:
+            scores = await self.gulag_client.get_user_best(id=profile.info.id, limit=3, mode=4)
+
+        await ctx.send(embed=ScoreMultipleEmbed(ctx, profile, mode, scores))
 
 
 async def setup(bot: Giuseppe) -> None:

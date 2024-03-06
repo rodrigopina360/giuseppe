@@ -1,10 +1,9 @@
 # No trailing slash
-# isort: dont-add-imports
+from __future__ import annotations
 
-
-BASE_GIUSEPPE_URL = "https://giuseppecord.com"
-BASE_GIUSEPPE_API_URL = "https://api.giuseppecord.com"
+BASE_GIUSEPPE_URL = "https://osu.pinoptserver.website"
+BASE_GIUSEPPE_API_URL = "https://api.pinoptserver.website/v1"
 
 from .helpers import *
-from .humanizer import *
 from .logging import *
+from .humanizer import *

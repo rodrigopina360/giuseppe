@@ -1,4 +1,4 @@
-# isort: dont-add-imports
+from __future__ import annotations
 
 from .profile import ProfileEmbed
 from .score import ScoreMultipleEmbed

@@ -8,7 +8,9 @@ services:
       - db:/data/db
 
   giuseppe:
-    image: ghcr.io/niceaesth/giuseppe:master
+    build:
+      context: .
+    image: giuseppe
     container_name: giuseppe
     volumes:
       - ./config.json:/home/appuser/config.json:ro

@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING
 
 import aiohttp
 import orjson
-
 from common import BASE_GIUSEPPE_API_URL
 from common.helpers import add_param
 from common.helpers import from_list
 from models import osu
+from common.logging import logger
 
 if TYPE_CHECKING:
     from typing import Any
@@ -91,6 +91,7 @@ class GulagClient:
         add_param(params, kwargs, "mods", converter=str)
         add_param(params, kwargs, "mode", converter=int)
         add_param(params, kwargs, "limit", converter=int)
+        add_param(params, kwargs, "index", converter=int)
         add_param(params, kwargs, "include_loved", converter=int)
         add_param(params, kwargs, "include_failed", converter=int)
         data = await self._request(
@@ -120,6 +121,8 @@ class GulagClient:
                 Mode
             * *limit* (``int``) --
                 Limit
+            * *index* (``int``) --
+                Index
             * *include_loved* (``bool``) --
                 Include loved: Default is ``False``
             * *include_failed* (``bool``) --

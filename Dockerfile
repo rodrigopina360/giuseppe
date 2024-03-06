@@ -23,4 +23,4 @@ USER appuser
 # Install application into container
 COPY . .
 # Run the application
-CMD ["python", "./run.py"]
+CMD ["python", "src/run.py"]
