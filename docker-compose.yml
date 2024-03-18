@@ -10,8 +10,7 @@ services:
   giuseppe:
     build:
       context: .
-    image: giuseppe
-    container_name: giuseppe
+    init: true
     volumes:
       - ./config.json:/home/appuser/config.json:ro
     depends_on:
