@@ -82,18 +82,21 @@ class GulagClient:
 
     async def _get_type_scores(
         self,
+        request_type: str,
         **kwargs: Any,
     ) -> list[osu.Score]:
-        params = {}
+        params = {"scope": request_type}
         add_param(params, kwargs, "id", converter=int)
         add_param(params, kwargs, "username", "name", converter=str)
-        #add_param(params, kwargs, "mods", converter=str)
+        add_param(params, kwargs, "mods", converter=str)
         add_param(params, kwargs, "mode", converter=int)
         add_param(params, kwargs, "limit", converter=int)
-        #add_param(params, kwargs, "index", converter=int)
+        add_param(params, kwargs, "index", converter=int)
+        add_param(params, kwargs, "include_loved", converter=int)
+        add_param(params, kwargs, "include_failed", converter=int)
         data = await self._request(
             "GET",
-            f"{self._base_url}/get_most_recent_score",
+            f"{self._base_url}/get_player_scores",
             params=params,
         )
         return from_list(osu.Score.model_validate, data.get("scores"))
@@ -128,7 +131,7 @@ class GulagClient:
         :return: User best scores
         :rtype: list[osu.Score]
         """
-        return await self._get_type_scores(**kwargs)
+        return await self._get_type_scores("best", **kwargs)
 
     async def get_user_recent(
         self,
@@ -157,8 +160,9 @@ class GulagClient:
         :return: User recent scores
         :rtype: list[osu.Score]
         """
-
-        return await self._get_type_scores(**kwargs)
+        if "include_loved" not in kwargs:
+            kwargs["include_loved"] = True
+        return await self._get_type_scores("recent", **kwargs)
 
     async def close(self) -> None:
         if self._session is not None:
